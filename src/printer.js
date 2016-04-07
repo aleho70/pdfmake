@@ -299,8 +299,8 @@ function renderLine(line, x, y, pdfKitDoc) {
 function renderWatermark(page, pdfKitDoc){
 	var watermark = page.watermark;
 
-	pdfKitDoc.fill('black');
-	pdfKitDoc.opacity(0.6);
+	pdfKitDoc.fill('darkgray'); // Change colour to lighter
+	pdfKitDoc.opacity(0.3); // Change opacity as watermark was too dark
 
 	pdfKitDoc.save();
 	pdfKitDoc.transform(1, 0, 0, -1, 0, pdfKitDoc.page.height);
@@ -311,8 +311,10 @@ function renderWatermark(page, pdfKitDoc){
   var encoded = watermark.font.encode(watermark.text);
 	pdfKitDoc.addContent('BT');
 	pdfKitDoc.addContent('' + (pdfKitDoc.page.width/2 - watermark.size.size.width/2) + ' ' + (pdfKitDoc.page.height/2 - watermark.size.size.height/4) + ' Td');
-	pdfKitDoc.addContent('/' + encoded.fontId + ' ' + watermark.size.fontSize + ' Tf');
-	pdfKitDoc.addContent('<' + encoded.encodedText + '> Tj');
+    //pdfKitDoc.addContent('/' + encoded.fontId + ' ' + watermark.size.fontSize + ' Tf');
+    pdfKitDoc.addContent('/ ' + watermark.size.fontSize + ' Tf');
+	// pdfKitDoc.addContent('<' + encoded.encodedText + '> Tj');
+    pdfKitDoc.addContent('(' + watermark.text + ') Tj');
 	pdfKitDoc.addContent('ET');
 	pdfKitDoc.restore();
 }
