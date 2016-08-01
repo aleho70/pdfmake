@@ -12,6 +12,8 @@ var ImageMeasure = require('./imageMeasure');
 var textDecorator = require('./textDecorator');
 var FontProvider = require('./fontProvider');
 
+_.noConflict();
+
 ////////////////////////////////////////
 // PdfPrinter
 
@@ -101,6 +103,7 @@ PdfPrinter.prototype.createPdfKitDocument = function(docDefinition, options) {
 		this.pdfKitDoc.info.Author = docDefinition.info.author ? docDefinition.info.author : null;
 		this.pdfKitDoc.info.Subject = docDefinition.info.subject ? docDefinition.info.subject : null;
 		this.pdfKitDoc.info.Keywords = docDefinition.info.keywords ? docDefinition.info.keywords : null;
+		this.pdfKitDoc.info.CreationDate = docDefinition.info.creationDate ? docDefinition.info.creationDate : null;
 	}
 	
 	this.fontProvider = new FontProvider(this.fontDescriptors, this.pdfKitDoc);
