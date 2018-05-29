@@ -246,70 +246,72 @@ LayoutBuilder.prototype.addHeadersAndFooters = function (header, footer) {
 	}
 };
 
-LayoutBuilder.prototype.addWatermark = function(watermark, fontProvider, defaultStyle) {
-if (typeof watermark === 'string') {
-     watermark = {'text': watermark};
-   }
+LayoutBuilder.prototype.addWatermark = function (watermark, fontProvider, defaultStyle) {
+	if (typeof watermark === 'string') {
+		watermark = { 'text': watermark };
+	}
 
-   if (!watermark.text) { // empty watermark text
-     return;
-   }
+	if (!watermark.text) { // empty watermark text
+		return;
+	}
 
-   watermark.font = watermark.font || defaultStyle.font || 'Roboto';
-   watermark.color = watermark.color || 'darkgray';
-   watermark.opacity = watermark.opacity || 0.3;
-   watermark.bold = watermark.bold || false;
-   watermark.italics = watermark.italics || false;
+	watermark.font = watermark.font || defaultStyle.font || 'Roboto';
+	watermark.color = watermark.color || 'darkgray';
+	watermark.opacity = watermark.opacity || 0.3;
+	watermark.bold = watermark.bold || false;
+	watermark.italics = watermark.italics || false;
 
-   var watermarkObject = {
-       text: watermark.text,
-       font: fontProvider.provideFont(watermark.font, watermark.bold, watermark.italics),
-       size: getSize(this.pageSize, watermark, fontProvider),
-       color: watermark.color,
-       opacity: watermark.opacity
-   };
+	var watermarkObject = {
+		text: watermark.text,
+		font: fontProvider.provideFont(watermark.font, watermark.bold, watermark.italics),
+		size: getSize(this.pageSize, watermark, fontProvider),
+		color: watermark.color,
+		opacity: watermark.opacity
+	};
 
-  var pages = this.writer.context().pages;
-  for(var i = 0, l = pages.length; i < l; i++) {
-    pages[i].watermark = watermarkObject;
-  }
+	var pages = this.writer.context().pages;
+	for (var i = 0, l = pages.length; i < l; i++) {
+		pages[i].watermark = watermarkObject;
+	}
 
-  function getSize(pageSize, watermark, fontProvider){
-    var width = pageSize.width;
-    var height = pageSize.height;
-    var targetWidth = Math.sqrt(width*width + height*height)*0.8; /* page diagonal * sample factor */
-    var textTools = new TextTools(fontProvider);
-    var styleContextStack = new StyleContextStack(null, {font: watermark.font, bold: watermark.bold, italics: watermark.italics});
-    var size;
+	function getSize(pageSize, watermark, fontProvider) {
+		var width = pageSize.width;
+		var height = pageSize.height;
+		var targetWidth = Math.sqrt(width * width + height * height) * 0.8; /* page diagonal * sample factor */
+		var textTools = new TextTools(fontProvider);
+		var styleContextStack = new StyleContextStack(null, { font: watermark.font, bold: watermark.bold, italics: watermark.italics });
+		var size;
 
     /**
      * Binary search the best font size.
      * Initial bounds [0, 1000]
      * Break when range < 1
      */
-    var a = 0;
-    var b = 1000;
-    var c = (a+b)/2;
-    while(Math.abs(a - b) > 1){
-      styleContextStack.push({
-        fontSize: c
-      });
-      size = textTools.sizeOfString(watermark.text, styleContextStack);
-      if(size.width > targetWidth){
-        b = c;
-        c = (a+b)/2;
-      }
-      else if(size.width < targetWidth){
-        a = c;
-        c = (a+b)/2;
-      }
-      styleContextStack.pop();
-    }
+		var a = 0;
+		var b = 1000;
+		var c = (a + b) / 2;
+		while (Math.abs(a - b) > 1) {
+			styleContextStack.push({
+				fontSize: c
+			});
+			size = textTools.sizeOfString(watermark.text, styleContextStack);
+			if (size.width > targetWidth) {
+				b = c;
+				c = (a + b) / 2;
+			}
+			else if (size.width < targetWidth) {
+				a = c;
+				c = (a + b) / 2;
+			}
+			styleContextStack.pop();
+		}
     /*
       End binary search
      */
-    return {size: size, fontSize: c};
-  }
+		return { size: size, fontSize: c };
+	}
+};
+
 LayoutBuilder.prototype.addWatermark = function (watermark, fontProvider, defaultStyle) {
 	if (isString(watermark)) {
 		watermark = {'text': watermark};
